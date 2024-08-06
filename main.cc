@@ -21,7 +21,16 @@ class ConfigManager {
   }
 
   bool Init() {
-    std::string json = "x";
+    std::string json = R"({
+        "server_addr": "127.0.0.1",
+        "grpc_server_port": 10001,
+        "http_server_port": 10002,
+        "metric_ratio": 1,
+        "metric_interval_sec": 3,
+        "discard_ratio": 1,
+        "thread_pool_size": 3
+      }
+    )";
     google::protobuf::util::JsonParseOptions option;
     option.case_insensitive_enum_parsing = false;
     option.ignore_unknown_fields = true;
@@ -35,8 +44,12 @@ class ConfigManager {
 
   std::string ToString() {
     google::protobuf::util::JsonPrintOptions option;
+    option.add_whitespace = true;
+    option.always_print_enums_as_ints = false;
+    option.always_print_primitive_fields = true;
+    option.preserve_proto_field_names = true;
     std::string json;
-    if (!google::protobuf::json::MessageToJsonString(base_config_, &json,
+    if (!google::protobuf::util::MessageToJsonString(base_config_, &json,
                                                      option)
              .ok()) {
       LOG(ERROR) << "to json string failed";
@@ -51,7 +64,6 @@ class ConfigManager {
 static folly::Singleton<ConfigManager> config_manager;
 int main(int argc, char **argv) {
   char *arr = new char[8];
-  LOG(INFO) << "TEST";
   strcpy(arr, "test");
   LOG(INFO) << arr;
 
