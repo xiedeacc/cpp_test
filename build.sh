@@ -1,0 +1,21 @@
+g++ -std=c++17 config.pb.cc config.pb.h main.cc \
+ -fuse-ld=lld \
+ -Wl,-no-as-needed \
+ -Wl,-z,relro,-z,now \
+ /usr/local/lib/libfolly.a \
+ /usr/local/lib/libiberty.a \
+ /usr/local/lib/libprotobuf.a \
+ /usr/local/lib/libutf8_range.a \
+ /usr/local/lib/libutf8_validity.a \
+ -L/usr/local/lib \
+ -Wl,--push-state,-as-needed \
+ -labsl \
+ -lfmt \
+ -lglog \
+ -lgflags \
+ -lunwind \
+ -lunwind-generic \
+ -ldouble-conversion \
+ -Wl,--pop-state \
+ -Wl,-rpath,/usr/local/lib \
+ -o main
